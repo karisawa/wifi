@@ -1,2 +1,2 @@
 # wifi
-user interface for wifi on plan9
+user agent for wifi on plan9
