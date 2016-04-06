@@ -1,0 +1,79 @@
+#!/bin/rc
+rfork e
+usage='usage: wifi [ -dp12 ] [ -s essid dev ]'
+
+edev=`{grep -l '^essid:' /net/ether*/ifstats|sed 's!/ifstats!!g'}
+if(~ $#edev 0){
+	echo no wifi device
+	exit
+}
+# then $edev is '/net/ether0' in regular case
+
+#
+#	we assume essid does not contain "," and "|"
+#	it seems factotum locate essid field at $3,
+#	however I don't know this is always true
+#
+factotum=/mnt/factotum/ctl
+if(test -e $factotum){
+	essid=`{awk '/essid=/{print $3}' $factotum | sed 's/essid=//g'}
+	essid=`{echo $"essid | tr ' ' ','}
+	# then the essid is a comma seperated list of essid
+}
+
+if(~ $#essid 0)
+	essid=''
+
+if(~ $#* 0){
+	for(dev in $edev){
+		awk -v 'dev='$dev -v 'essid='$essid '
+		BEGIN{
+			gsub(",","|",essid)
+		}
+		$6 ~ /.+/{
+		if(match($6,essid))
+			printf("wifi -s %s %s\n",$6,dev)
+		else
+			printf("wifi -ps %s %s\n",$6,dev)
+		}' $dev/ifstats | sort
+	}
+	exit
+}
+
+essid=`{awk '/^essid:/{print $2}' $edev/ifstats} # current essid
+
+arg=$*
+opt=()
+newessid=()
+while(~ $1 -*){
+	switch($1){
+	case -?*[s]*
+		o=`{echo $1 | sed 's/(-[^s]+)([s])(.*)/\1 -\2 \3/'}
+		opt=($opt $o(1))
+		shift
+		*=($o(2) $o(3) $*)
+	case -s
+		shift
+		newessid=$1
+		shift
+	case -*
+		opt=($opt $1)
+		shift
+	}
+}
+#DBG
+#echo opt $opt
+#echo newessid $newessid
+#exit
+
+if(~ $essid ?* && ! ~ $essid $newessid){
+	# then we switch to other essid
+	echo essid $newessid > $edev/clone # $edev/ifstats does not work
+	aux/wpa $arg
+	sleep 1
+	ip/ipconfig unbind && ip/ipconfig && ipv6on
+	exit
+}
+aux/wpa $arg
+sleep 1
+ip/ipconfig && ipv6on
