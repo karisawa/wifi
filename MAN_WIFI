@@ -7,7 +7,7 @@ SYNOPSIS
 	wifi [ -dp12 ] [ -s essid dev ]
 
 DESCRIPTION
-	Wifi is a users agent for wifi connection.
+	Wifi is a user agent for wifi connection.
 	Regular usage is just execute "wifi".
 	Then the output shows commands for next step to do.
 	For example:
