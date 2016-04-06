@@ -1,0 +1,32 @@
+WIFI(1)
+
+NAME
+	wifi
+
+SYNOPSIS
+	wifi [ -dp12 ] [ -s essid dev ]
+
+DESCRIPTION
+	Wifi is a users agent for wifi connection.
+	Regular usage is just execute "wifi".
+	Then the output shows commands for next step to do.
+	For example:
+		term% wifi
+		# current essid: air1
+		wifi -ps WARPSTAR-884958 /net/ether0
+		wifi -ps WARPSTAR-884958-W /net/ether0
+		wifi -ps WARPSTAR-B8F633 /net/ether0
+		wifi -ps WARPSTAR-B8F633-W /net/ether0
+		wifi -ps WARPSTAR-EA2F8E-W /net/ether0
+		wifi -ps pr500k-e3cb2b-1 /net/ether0
+		wifi -ps pr500k-e3cb2b-2 /net/ether0
+		wifi -s air1 /net/ether0
+		wifi -s aterm-6690e0-g /net/ether0
+		wifi -s ctc-g-d786fe /net/ether0
+		term% 
+	The essid name in the first commented line will be empty
+	if your device have not been connected to any essid.
+	Here, we have two types of options "-ps" and "-s".
+	The latter is for essids that are registered in factotum.
+	The wifi command shares all options with wpa(8).
+	Look the manual for details.
