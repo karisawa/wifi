@@ -69,9 +69,9 @@ if(~ $curessid ?* && ! ~ $curessid $newessid){
 	echo essid $newessid > $edev/clone # $edev/ifstats does not work
 	aux/wpa $arg
 	sleep 1
-	ip/ipconfig unbind && ip/ipconfig -dX && ipv6on
+	ip/ipconfig unbind && ip/ipconfig -dX # && ipv6on
 	exit
 }
 aux/wpa $arg
 sleep 1
-ip/ipconfig -dX && ipv6on
+ip/ipconfig -dX # && ipv6on
